@@ -37,7 +37,7 @@ app.all('*', (req, res) => {
 
 // Run service
 app.listen(PORT, () => {
-  logger.debug(`[${process.env.NODE_ENV}] Auth-Service started on port ${PORT}`)
+  logger.debug(`[${process.env.NODE_ENV}] Auth-Service ready on port ${PORT}`)
 })
 
 export default app
