@@ -11,31 +11,31 @@ import linkedin from './linkedin'
 
 const router = express.Router()
 
-// Route create
+// Route Create Account
 router.use('/create', create)
 
-// Route validate
+// Route Validate Account
 router.use('/validate', validate)
 
-// Route Box Authorize
+// Route Authorize Box Service
 router.use('/box', box)
 
-// Route Dropbox Authorize
+// Route Authorize Dropbox Service
 router.use('/dropbox', dropbox)
 
-// Route Evernote Authorize
+// Route Authorize Evernote Service
 router.use('/evernote', evernote)
 
-// Route Google Authorize
+// Route Authorize Google Service
 router.use('/google', google)
 
-// Route LinkedIn Authorize
+// Route Authorize LinkedIn Service
 router.use('/linkedin', linkedin)
 
-// Route Microsoft Authorize
+// Route Authorize Microsoft Service
 router.use('/microsoft', microsoft)
 
-// Route Twitter Authorize
+// Route Authorize Twitter Service
 router.use('/twitter', twitter)
 
 export default router
