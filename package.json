@@ -31,12 +31,23 @@
   "dependencies": {
     "bcryptjs": "2.4.3",
     "body-parser": "1.17.2",
+    "connect-redis": "3.3.0",
     "dotenv": "4.0.0",
     "express": "4.15.3",
+    "express-session": "1.15.4",
+    "jsonwebtoken": "7.4.1",
     "lodash": "4.17.4",
     "mongoose": "4.11.5",
     "morgan": "1.8.2",
     "passport": "0.3.2",
+    "passport-azure-ad-oauth2": "0.0.4",
+    "passport-box": "2.1.0",
+    "passport-dropbox-oauth2": "1.1.0",
+    "passport-evernote": "1.0.1",
+    "passport-google-oauth2": "0.1.6",
+    "passport-linkedin-oauth2": "1.5.0",
+    "passport-twitter": "1.0.4",
+    "redis": "2.7.1",
     "winston": "2.3.1"
   },
   "devDependencies": {
