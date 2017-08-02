@@ -5,14 +5,34 @@ import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import logger from './lib/logger'
 import routes from './routes'
+import session from 'express-session'
+import redis from 'redis'
+import connectRedis from 'connect-redis'
 
 const app = express()
 const PORT = process.env.PORT || 8080
 
+const redisStore = connectRedis(session)
+const redisClient = redis.createClient()
+
 // Service middleware
+app.use(require('morgan')('short', {stream: logger.stream}))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
-app.use(require('morgan')('short', {stream: logger.stream}))
+
+// Redis Session
+let sessionOpts = {
+  secret: process.env.REDIS_SECRET,
+  store: new redisStore({
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    client: redisClient,
+    ttl: 2260
+  }),
+  saveUninitialized: true,
+  resave: false
+}
+app.use(session(sessionOpts))
 
 // Mongo connection
 let mongoOpts = {
