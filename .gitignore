@@ -4,6 +4,7 @@ node_modules/
 
 # Other files and folders
 .env
+.DS_Store
 
 # Log Files
 *.log
