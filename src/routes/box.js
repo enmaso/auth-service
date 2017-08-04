@@ -31,6 +31,11 @@ passport.use(new Strategy({
 
 const router = Router()
 
+router.get('/verify', (req, res) => {
+  console.log(req.session)
+  res.send('OK')
+})
+
 router.get('/', passport.authenticate('box', {
   accessType: 'offline',
   approvalPrompt: 'force'

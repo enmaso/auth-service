@@ -58,6 +58,11 @@ passport.use(new Strategy({
 
 const router = Router()
 
+router.get('/', (req, res, next) => {
+  console.log(req.params)
+  res.send('OK')
+})
+
 router.post('/', passport.authenticate('local'), (req, res) => {
   res.send('OK')
 })
