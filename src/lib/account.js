@@ -39,6 +39,9 @@ schema.pre('save', function(next) {
 schema.statics = {
   match(password, hash) {
     return bcrypt.compareSync(password, hash)
+  },
+  hash(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
   }
 }
 
