@@ -8,6 +8,7 @@ import routes from './routes'
 import session from 'express-session'
 import redis from 'redis'
 import connectRedis from 'connect-redis'
+import passport from 'passport'
 
 const app = express()
 const PORT = process.env.PORT || 8080
@@ -19,6 +20,8 @@ const redisClient = redis.createClient()
 app.use(require('morgan')('short', {stream: logger.stream}))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
+app.use(passport.initialize())
+//app.use(passport.session())
 
 // Redis Session
 let sessionOpts = {
