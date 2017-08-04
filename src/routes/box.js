@@ -4,11 +4,12 @@ import { Router } from 'express'
 import _ from 'lodash'
 import logger from '../lib/logger'
 import Account from '../lib/account'
+import Service from '../lib/service'
 import passport from 'passport'
 import { Strategy } from 'passport-box'
 
 passport.serializeUser(function (user, done) {
-  done(null, obj)
+  done(null, user.id)
 })
 passport.deserializeUser(function (obj, done) {
   done(null, obj)
@@ -16,9 +17,11 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new Strategy({
   clientID: process.env.BOX_CLIENT_ID,
   clientSecret: process.env.BOX_CLIENT_SECRET,
-  callbackURL: process.env.BOX_CLIENT_CALLBACK_URL
-}, function (accessToken, refreshToken, profile, done) {
+  callbackURL: process.env.BOX_CLIENT_CALLBACK_URL,
+  passReqToCallback: true
+}, function (req, accessToken, refreshToken, profile, done) {
   process.nextTick(() => {
+    console.log(req.user)
     console.log('accessToken: ', accessToken)
     console.log('refreshToken: ', refreshToken)
     console.log('profile: ', profile)
