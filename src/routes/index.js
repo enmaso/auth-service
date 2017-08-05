@@ -9,6 +9,15 @@ import linkedin from './linkedin'
 
 const router = express.Router()
 
+// Middleware ensure session state
+router.use((req, res, next) => {
+  if(req.session.passport) {
+    next()
+  } else {
+    return res.status(401).send('Unauthorized')
+  }
+})
+
 // Route Authorize Box Service
 router.use('/box', box)
 
