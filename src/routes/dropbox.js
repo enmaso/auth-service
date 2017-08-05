@@ -33,7 +33,6 @@ passport.use(new Strategy({
       }
       return done(null, profile)
     })
-    return done(null, profile)
   })
 }))
 
