@@ -3,13 +3,12 @@ require('dotenv').config()
 import { Router } from 'express'
 import _ from 'lodash'
 import logger from '../lib/logger'
-import Account from '../lib/account'
 import passport from 'passport'
 import { Strategy } from 'passport-azure-ad-oauth2'
 import jwt from 'jsonwebtoken'
 
 passport.serializeUser(function (user, done) {
-  done(null, obj)
+  done(null, user.id)
 })
 passport.deserializeUser(function (obj, done) {
   done(null, obj)
