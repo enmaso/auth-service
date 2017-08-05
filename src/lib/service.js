@@ -9,7 +9,8 @@ const schema = new mongoose.Schema({
   },
   identity: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   accountId: {
     type: String,
