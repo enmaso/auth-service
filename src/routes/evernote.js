@@ -19,13 +19,23 @@ passport.use(new Strategy({
   userAuthorizationURL: 'https://sandbox.evernote.com/OAuth.action',
   consumerKey: process.env.EVERNOTE_CONSUMER_KEY,
   consumerSecret: process.env.EVERNOTE_CONSUMER_SECRET,
-  callbackURL: process.env.EVERNOTE_CLIENT_CALLBACK_URL
-}, function (token, tokenSecret, profile, done) {
+  callbackURL: process.env.EVERNOTE_CLIENT_CALLBACK_URL,
+  passReqToCallback: true
+}, function (req, token, tokenSecret, profile, done) {
   process.nextTick(() => {
-    console.log('token: ', token)
-    console.log('tokenSecret: ', tokenSecret)
-    console.log('profile: ', profile)
-    return done(null, profile)
+    let service = new Service()
+    service.provider = 'evernote'
+    service.identity = profile.id
+    service.accountId = req.session.passport.user
+    service.accessToken = token
+    //service.refreshToken = tokenSecret
+    service.profile = profile
+    service.save(err => {
+      if(err) {
+        logger.warn(err)
+      }
+      return done(null, profile)
+    })
   })
 }))
 

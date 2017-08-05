@@ -15,13 +15,23 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new Strategy({
   consumerKey: process.env.TWITTER_CONSUMER_KEY,
   consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-  callbackURL: process.env.TWITTER_CLIENT_CALLBACK_URL
-}, function (accessToken, refreshToken, profile, done) {
+  callbackURL: process.env.TWITTER_CLIENT_CALLBACK_URL,
+  passReqToCallback: true
+}, function (req, accessToken, refreshToken, profile, done) {
   process.nextTick(() => {
-    console.log('accessToken: ', accessToken)
-    console.log('refreshToken: ', refreshToken)
-    console.log('profile: ', profile)
-    return done(null, profile)
+    let service = new Service()
+    service.provider = 'twitter'
+    service.identity = profile.username
+    service.accountId = req.session.passport.user
+    service.accessToken = accessToken
+    service.refreshToken = refreshToken
+    service.profile = profile
+    service.save(err => {
+      if(err) {
+        logger.warn(err)
+      }
+      return done(null, profile)
+    })
   })
 }))
 

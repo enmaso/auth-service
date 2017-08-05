@@ -16,13 +16,23 @@ passport.use(new Strategy({
   clientID: process.env.LINKEDIN_CLIENT_ID,
   clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
   callbackURL: process.env.LINKEDIN_CLIENT_CALLBACK_URL,
-  scope: ['r_emailaddress', 'r_basicprofile', 'w_share', 'rw_company_admin']
-}, function (accessToken, refreshToken, profile, done) {
+  scope: ['r_emailaddress', 'r_basicprofile', 'w_share', 'rw_company_admin'],
+  passReqToCallback: true
+}, function (req, accessToken, refreshToken, profile, done) {
   process.nextTick(() => {
-    console.log('accessToken: ', accessToken)
-    console.log('refreshToken: ', refreshToken)
-    console.log('profile: ', profile)
-    return done(null, profile)
+    let service = new Service()
+    service.provider = 'linkedin'
+    service.identity = profile.emails[0].value
+    service.accountId = req.session.passport.user
+    service.accessToken = accessToken
+    service.refreshToken = refreshToken
+    service.profile = profile
+    service.save(err => {
+      if(err) {
+        logger.warn(err)
+      }
+      return done(null, profile)
+    })
   })
 }))
 

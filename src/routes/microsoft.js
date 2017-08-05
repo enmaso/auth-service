@@ -18,12 +18,24 @@ passport.use(new Strategy({
   clientSecret: process.env.MICROSOFT_CLIENT_SECRET,
   callbackURL: process.env.MICROSOFT_CLIENT_CALLBACK_URL,
   resource: 'https://graph.microsoft.com/',
-  scope: 'Calendars.Read Contacts.Read Notes.Read People.Read Tasks.Read User.Read Mail.Read Files.ReadWrite Sites.Read.All offline_access'
-}, function (accessToken, refreshToken, params, profile, done) {
+  scope: 'Calendars.Read Contacts.Read Notes.Read People.Read Tasks.Read User.Read Mail.Read Files.ReadWrite Sites.Read.All offline_access',
+  passReqToCallback: true
+}, function (req, accessToken, refreshToken, params, profile, done) {
   process.nextTick(() => {
     let decoded = jwt.decode(params.id_token)
-    console.log('decoded: ', decoded)
-    return done(null, profile)
+    let service = new Service()
+    service.provider = 'microsoft'
+    service.identity = decoded.upn
+    service.accountId = req.session.passport.user
+    service.accessToken = accessToken
+    service.refreshToken = refreshToken
+    service.profile = Object.assign(params, profile, decoded)
+    service.save(err => {
+      if(err) {
+        logger.warn(err)
+      }
+      return done(null, profile)
+    })
   })
 }))
 
@@ -59,4 +71,25 @@ params:  { token_type: 'Bearer',
 */
 /* Sample PROFILE dataset
 { provider: 'azure_ad_oauth2' }
+
+DECODED portion jwt decode of id_token
+
+decoded:  { aud: '420be8e1-e877-4015-ba5a-f83fc6620808',
+  iss: 'https://sts.windows.net/1aed3d32-0531-49bf-8af0-9763f36d82b0/',
+  iat: 1501972879,
+  nbf: 1501972879,
+  exp: 1501976779,
+  amr: [ 'pwd' ],
+  family_name: 'Jones',
+  given_name: 'Adam',
+  ipaddr: '68.228.207.134',
+  name: 'Adam Jones',
+  oid: '17fb937f-859e-4f13-a9fd-423bdad30449',
+  platf: '5',
+  sub: 'FqkerW-lojl_TLB6WEJJxPlwrhQBuDmY9jSu8nfD3uI',
+  tid: '1aed3d32-0531-49bf-8af0-9763f36d82b0',
+  unique_name: 'dev@us.kollabria.com',
+  upn: 'dev@us.kollabria.com',
+  ver: '1.0' }
+
  */

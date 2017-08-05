@@ -30,11 +30,10 @@ let sessionOpts = {
   store: new redisStore({
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
-    client: redisClient,
-    ttl: 2260
+    client: redisClient
   }),
   saveUninitialized: true,
-  resave: false,
+  resave: true,
 }
 app.use(session(sessionOpts))
 
