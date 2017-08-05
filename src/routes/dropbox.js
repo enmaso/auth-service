@@ -3,12 +3,12 @@ require('dotenv').config()
 import { Router } from 'express'
 import _ from 'lodash'
 import logger from '../lib/logger'
-import Account from '../lib/account'
+import Service from '../lib/service'
 import passport from 'passport'
 import { Strategy } from 'passport-dropbox-oauth2'
 
 passport.serializeUser(function (user, done) {
-  done(null, obj)
+  done(null, user.id)
 })
 passport.deserializeUser(function (obj, done) {
   done(null, obj)
@@ -16,12 +16,23 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new Strategy({
   clientID: process.env.DROPBOX_CLIENT_ID,
   clientSecret: process.env.DROPBOX_CLIENT_SECRET,
-  callbackURL: process.env.DROPBOX_CLIENT_CALLBACK_URL
-}, function (accessToken, refreshToken, profile, done) {
+  callbackURL: process.env.DROPBOX_CLIENT_CALLBACK_URL,
+  passReqToCallback: true
+}, function (req, accessToken, refreshToken, profile, done) {
   process.nextTick(() => {
-    console.log('accessToken: ', accessToken)
-    console.log('refreshToken: ', refreshToken)
-    console.log('profile: ', profile)
+    let service = new Service()
+    service.provider = 'dropbox'
+    service.identity = profile.emails[0].value
+    service.accountId = req.session.passport.user
+    service.accessToken = accessToken
+    //service.refreshToken = refreshToken // Doesn't seem to be defined by dropbox
+    service.profile = profile
+    service.save(err => {
+      if(err) {
+        logger.warn(err)
+      }
+      return done(null, profile)
+    })
     return done(null, profile)
   })
 }))
