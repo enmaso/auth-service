@@ -3,7 +3,6 @@ require('dotenv').config()
 import { Router } from 'express'
 import _ from 'lodash'
 import logger from '../lib/logger'
-import Account from '../lib/account'
 import Service from '../lib/service'
 import passport from 'passport'
 import { Strategy } from 'passport-box'
