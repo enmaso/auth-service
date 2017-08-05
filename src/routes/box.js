@@ -21,21 +21,23 @@ passport.use(new Strategy({
   passReqToCallback: true
 }, function (req, accessToken, refreshToken, profile, done) {
   process.nextTick(() => {
-    console.log(req.session)
-    console.log('accessToken: ', accessToken)
-    console.log('refreshToken: ', refreshToken)
-    console.log('profile: ', profile)
-    return done(null, profile)
+    let service = new Service()
+    service.provider = 'box'
+    service.identity = profile.login
+    service.accountId = req.session.passport.user
+    service.accessToken = accessToken
+    service.refreshToken = refreshToken
+    service.profile = profile
+    service.save(err => {
+      if(err) {
+        logger.warn(err)
+      }
+      return done(null, profile)
+    })
   })
 }))
 
 const router = Router()
-
-router.get('/verify', (req, res) => {
-  res.send({
-    session: req.session
-  })
-})
 
 router.get('/', passport.authenticate('box', {
   accessType: 'offline',
