@@ -7,6 +7,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: true
   },
+  identity: {
+    type: String,
+    required: true
+  },
   accountId: {
     type: String,
     required: true
