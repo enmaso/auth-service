@@ -34,9 +34,10 @@ router.post('/', (req, res) => {
               id: account._id,
               email: account.email,
               scope: [],
-              iss: 'https://enmaso.com'
+              iss: 'https://enmaso.com',
+              key: account.key
             }
-            let token = jwt.sign(payload, account.key)
+            let token = jwt.sign(payload, account.key, {algorithm: 'HS512'})
             res.status(200).json({
               token: token
             })

@@ -21,7 +21,7 @@ passport.use(new Strategy({
   passReqToCallback: true
 }, function (req, accessToken, refreshToken, profile, done) {
   process.nextTick(() => {
-    console.log(req.user)
+    console.log(req.session)
     console.log('accessToken: ', accessToken)
     console.log('refreshToken: ', refreshToken)
     console.log('profile: ', profile)
@@ -32,8 +32,9 @@ passport.use(new Strategy({
 const router = Router()
 
 router.get('/verify', (req, res) => {
-  console.log(req.session)
-  res.send('OK')
+  res.send({
+    session: req.session
+  })
 })
 
 router.get('/', passport.authenticate('box', {

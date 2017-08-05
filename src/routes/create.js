@@ -1,11 +1,66 @@
 import { Router } from 'express'
+import _ from 'lodash'
+import validator from 'validator'
 import logger from '../lib/logger'
 import Account from '../lib/account'
-import passport from 'passport'
-import { Strategy } from 'passport-local'
-import validator from 'validator'
 
+const router = Router()
 
+router.post('/', (req, res) => {
+  let params = _.pick(req.body, 'email', 'password')
+  if(!params.email || !params.password) {
+    logger.warn(new Error('Missing parameters'))
+    res.status(400).send({
+      success: false,
+      error: 'Missing parameters'
+    })
+  } else if(!validator.isEmail(params.email) || !validator.isLength(params.password, 4)) {
+    logger.warn(new Error('Invalid credentials'))
+    res.status(400).send({
+      success: false,
+      error: 'Invalid credentials'
+    })
+  } else {
+    Account.findOne({
+      email: params.email
+    })
+    .then(account => {
+      if(account) {
+        logger.warn(new Error('Account already exists'))
+        res.status(400).send({
+          success: false,
+          error: 'Account already exists'
+        })
+      } else {
+        let account = new Account()
+        account.email = params.email
+        account.password = params.password
+        account.save(err => {
+          if(err) {
+            logger.error(err)
+            res.status(500).send({
+              success: false,
+              error: err
+            })
+          } else {
+            res.status(201).send({
+              success: true,
+              account: account
+            })
+          }
+        })
+      }
+    })
+    .catch(err => {
+      logger.error(err)
+      res.status(500).send({
+        success: false,
+        error: err
+      })
+    })
+  }
+})
+/*
 passport.serializeUser(function (user, done) {
   done(null, user.id)
 })
@@ -66,5 +121,6 @@ router.get('/', (req, res, next) => {
 router.post('/', passport.authenticate('local'), (req, res) => {
   res.send('OK')
 })
+*/
 
 export default router
