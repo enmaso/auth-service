@@ -54,11 +54,3 @@ router.get('/callback', (req, res, next) => {
 })
 
 export default router
-
-/* Sample TOKEN S=s1:U=93e78:E=15da5d0a8d0:C=15da0aa4a48:P=185:A=jonesg:V=2:H=bc39e09917dbc15514bba5279b36125c */
-
-/* Sample TOKENSECRET undefined */
-
-/* Sample PROFILE dataset
-{ provider: 'evernote', id: '605816', shard: 's1' }
- */
