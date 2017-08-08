@@ -5,7 +5,8 @@ mongoose.Promise = global.Promise
 const schema = new mongoose.Schema({
   provider: {
     type: String,
-    required: true
+    required: true,
+    lowercase: true
   },
   identity: {
     type: String,
